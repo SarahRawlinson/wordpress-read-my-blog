@@ -1,0 +1,198 @@
+﻿
+/* Styles for highlighted word when active */
+.highlighted-word.highlighted-word--active{
+    background-color: yellow;
+}
+
+/* Styles for highlighted word */
+.highlighted-word {
+    background-color: #e2f4ff;
+}
+
+/* Styles for read aloud play button */
+.read-aloud-button-play {
+    background-color: green;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    position: relative;
+    font-size: 14px;
+}
+
+.read-aloud-button-play:hover {
+    background-color: darkgreen;
+}
+
+.read-aloud-button-play:active {
+    border: 1px solid black;
+}
+
+.read-aloud-button-play .icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
+}
+
+.read-aloud-button-play .text {
+    flex: 1;
+}
+
+.read-aloud-button-play .icon::before {
+    content: '';
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-left: 16px solid white;
+    border-bottom: 10px solid transparent;
+}
+
+/* Styles for read aloud stop button */
+.read-aloud-button-stop {
+    background-color: red;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    position: relative;
+    font-size: 14px;
+}
+
+.read-aloud-button-stop:hover {
+    background-color: darkred;
+}
+
+.read-aloud-button-stop:active {
+    border: 1px solid black;
+}
+
+.read-aloud-button-stop .icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
+}
+
+.read-aloud-button-stop .text {
+    flex: 1;
+}
+
+.read-aloud-button-stop .icon::before {
+    content: '';
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    background-color: white;
+}
+
+/* Styles for read aloud pause button */
+.read-aloud-button-pause {
+    background-color: orange;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    position: relative;
+    font-size: 14px;
+}
+
+.read-aloud-button-pause:hover {
+    background-color: darkorange;
+}
+
+.read-aloud-button-pause:active {
+    border: 1px solid black;
+}
+
+.read-aloud-button-pause .icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
+}
+
+.read-aloud-button-pause .text {
+    flex: 1;
+}
+
+.read-aloud-button-pause .icon::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 12px;
+    background-color: white;
+    margin-right: 4px;
+}
+
+.read-aloud-button-pause .icon::after {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 12px;
+    background-color: white;
+}
+
+/* Styles for read aloud resume button */
+.read-aloud-button-resume {
+    background-color: blue;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    position: relative;
+    font-size: 14px;
+}
+
+.read-aloud-button-resume:hover {
+    background-color: darkblue;
+}
+
+.read-aloud-button-resume:active {
+    border: 1px solid black;
+}
+
+.read-aloud-button-resume .icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
+}
+
+.read-aloud-button-resume .text {
+    flex: 1;
+}
+
+.read-aloud-button-resume .icon::before {
+    content: '';
+    display: inline-block;
+    border-radius: 50%;
+    background-color: white;
+    width: 16px;
+    height: 16px;
+}
+
