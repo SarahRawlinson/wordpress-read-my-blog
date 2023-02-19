@@ -56,7 +56,7 @@ function PlaySpeech() {
                 console.log('open bracket end = ' + (j + stringPos));
                 continue;
             }
-            if (isElement)
+            if (isElement || char === ' ')
             {
                 continue;
             }
