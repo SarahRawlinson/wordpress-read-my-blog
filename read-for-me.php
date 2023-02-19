@@ -174,7 +174,80 @@ function sarah_read_aloud_field_update_callback() {
 
 add_action( 'admin_enqueue_scripts', 'sarah_read_aloud_admin_enqueue_scripts' );
 
-// Enqueue script to read and update the hidden field value
-function sarah_read_aloud_admin_enqueue_scripts() {
-    wp_enqueue_script( 'sarah-read-aloud-admin', plugin_dir_url( __FILE__ ) . 'js/admin.js', array( 'jquery' ), '1.0.0', true );
+//// Enqueue script to read and update the hidden field value
+//function sarah_read_aloud_admin_enqueue_scripts() {
+//    wp_enqueue_script( 'sarah-read-aloud-admin', plugin_dir_url( __FILE__ ) . 'js/admin_min_bar.js', array( 'jquery' ), '1.0.0', true );
+//}
+//
+//function sarah_read_aloud_admin_bar_menu() {
+//    global $wp_admin_bar;
+//    $option = get_option('sarah_read_aloud_option_running');
+//    $checked = $option ? 'checked="checked"' : '';
+//    $wp_admin_bar->add_menu( array(
+//        'id' => 'sarah_read_aloud_admin_bar_menu',
+//        'parent' => 'top-secondary',
+//        'title' => '<label><input type="checkbox" name="sarah_read_aloud_option_running" value="1" ' . $checked . '>' . __( 'Enable Sarah\'s Read for Me', 'sarah-read-for-me' ) . '</label>',
+//        'meta' => array(
+//            'class' => 'sarah-read-aloud-admin-bar-menu',
+//            'onclick' => 'sarah_read_aloud_toggle_option();',
+//        ),
+//    ) );
+//}
+//add_action( 'wp_before_admin_bar_render', 'sarah_read_aloud_admin_bar_menu' );
+
+
+function sarah_read_aloud_toggle_option() {
+    if (isset($_POST['value'])) {
+        $value = intval($_POST['value']);
+        if ($value) {
+            update_option('sarah_read_aloud_option_running', 1);
+        } else {
+            update_option('sarah_read_aloud_option_running', 0);
+        }
+        echo $value;
+    }
+    wp_die();
 }
+add_action( 'wp_ajax_sarah_read_aloud_toggle_option', 'sarah_read_aloud_toggle_option');
+
+function sarah_read_aloud_admin_bar_menu() {
+    global $wp_admin_bar;
+    $option = get_option('sarah_read_aloud_option_running');
+    $checked = $option ? 'checked="checked"' : '';
+
+    $wp_admin_bar->add_menu( array(
+        'id' => 'sarah_read_aloud_admin_bar_menu',
+        'parent' => 'top-secondary',
+        'title' => '<label><input id="wp-admin-bar-sarah-read-aloud-toggle-option" type="checkbox" name="sarah_read_aloud_option_running" value="1" ' . $checked . '>' . __( 'Enable Sarah\'s Read for Me', 'sarah-read-for-me' ) . '</label>',
+        'meta' => array(
+            'class' => 'sarah-read-aloud-admin-bar-menu',
+            'onclick' => 'sarah_read_aloud_toggle_option();',
+        ),
+    ) );
+    
+    // Add a parent menu item to the admin bar
+    $wp_admin_bar->add_menu( array(
+        'id' => 'sarah-read-aloud-admin-bar-menu',
+        'title' => 'Sarah\'s Read for Me',
+        'href' => '#',
+    ) );
+
+    // Add a child menu item to toggle the option
+    $wp_admin_bar->add_menu( array(
+        'id' => 'wp-admin-bar-sarah-read-aloud-select-option-1',
+        'parent' => 'sarah-read-aloud-admin-bar-menu',
+        'title' => get_option('sarah_read_aloud_option_running') ? 'Disable Sarah\'s Read for Me' : 'Enable Sarah\'s Read for Me',
+        'href' => '#',
+        'meta' => array(
+            'class' => 'sarah-read-aloud-toggle-option',
+            'onclick' => 'sarah_read_aloud_select_option();',
+        ),
+    ) );
+}
+add_action( 'admin_bar_menu', 'sarah_read_aloud_admin_bar_menu', 999 );
+
+function sarah_read_aloud_admin_bar_scripts() {
+    wp_enqueue_script( 'sarah-read-aloud-admin-bar-scripts', plugin_dir_url( __FILE__ ) . 'js/admin_min_bar.js', array( 'jquery' ), '1.0.0', true );
+}
+add_action( 'wp_enqueue_scripts', 'sarah_read_aloud_admin_bar_scripts' );
+add_action( 'admin_enqueue_scripts', 'sarah_read_aloud_admin_bar_scripts' );
