@@ -20,8 +20,14 @@ function PlaySpeech() {
     let content_element = document.getElementById("blog-content");
     console.log(content_element);
     if (content_element === null) return;
-    console.log('read-aloud enabled');
+    console.log('read-aloud enabled v1');
     const allText = content_element.innerText;
+    const allHTML = content_element.innerHTML;
+    console.log(typeof allHTML);
+    let stringStart = "";
+    let stringEnd = "";
+    let stringCopyHTML = allHTML;
+    let stringPos = 0;
 
 // Create an array of all the words in the text
     const words = allText.split(" ");
@@ -29,20 +35,61 @@ function PlaySpeech() {
 
 // Create a new HTML element to hold the highlighted text
     const highlightedText = document.createElement("span");
-
-    i = 0;
+    
 // Loop through each word and add it to the highlighted text element with a class for styling
     words.forEach((word) => {
         const wordElement = document.createElement("span");
         wordElement.textContent = `${word} `;
         wordElement.classList.add("highlighted-word");
         wordElement.id = 'read-word-' + i;
+
+        stringCopyHTML = allHTML.substring(stringPos);
+        let wordIndex = 0;
+
+        let isElement = false;
+        let endPosition = 0;
+        for (let j = 0; j < stringCopyHTML.length; j++) {
+            let char = stringCopyHTML[j];
+            if (char === '>')
+            {
+                isElement = false;
+                console.log('open bracket end = ' + (j + stringPos));
+                continue;
+            }
+            if (isElement)
+            {
+                continue;
+            }
+            if (char === '<')
+            {
+                isElement = true;
+                console.log('open bracket start = ' + (j + stringPos));
+                continue;
+            }
+            if (char === word[wordIndex])
+            {
+                wordIndex++;
+                if (wordIndex === word.length)
+                {
+                    stringStart += allHTML.substring(stringPos, stringPos + j - word.length + 1) + wordElement.outerHTML;
+                    endPosition = stringPos + j + 1;
+                    break;
+                }
+            } else {
+                wordIndex = 0;
+            }
+        }
+
+        stringPos = endPosition;
+        stringEnd = allHTML.substring(stringPos);
         highlightedText.appendChild(wordElement);
         i++;
     });
 
 // Append the highlighted text element to the page
-    content_element.innerHTML = highlightedText.outerHTML;
+// content_element.appendChild(highlightedText);
+    content_element.innerHTML = stringStart + stringEnd;
+
 
 // Create a new instance of the Web Speech API SpeechSynthesis object
     const synth = window.speechSynthesis;
