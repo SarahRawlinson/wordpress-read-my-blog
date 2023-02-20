@@ -6,7 +6,27 @@ Author: Sarah Rawlinson
 Description: a simple plugin to read you blog post content.
 */
 
+wp_enqueue_script( 'sarah-read-aloud-admin-bar-scripts', plugin_dir_url( __FILE__ ) . 'js/admin_min_bar.js', array( 'jquery' ), '1.0.0', true );
+wp_localize_script( 'sarah-read-aloud-admin-bar-scripts', 'sarah_read_aloud_ajax_object', array( 'ajax_url' => admin_url( 'admin-ajax.php' ) ) );
 
+
+function sarah_read_aloud_admin_scripts() {
+    sarah_read_aloud_admin_bar_scripts();
+    sarah_read_aloud_admin_enqueue_scripts();
+}
+
+
+function sarah_read_aloud_site_scripts() {
+    sarah_read_aloud_add_style();
+    sarah_read_aloud_admin_bar_scripts();
+    sarah_read_aloud_add_js_scripts();
+
+}
+
+// Enqueue script to read and update the hidden field value
+function sarah_read_aloud_admin_enqueue_scripts() {
+    wp_enqueue_script( 'sarah-read-aloud-admin', plugin_dir_url( __FILE__ ) . 'js/admin.js', array( 'jquery' ), '1.0.0', true );
+}
 
 function sarah_read_aloud_add_style() {
 
@@ -20,7 +40,6 @@ function sarah_read_aloud_add_style() {
     // Enqueue editor styles
     wp_enqueue_style( 'read-for-me-style', $plugin_url . 'css/read-for-me-style.css' );
 }
-add_action( 'wp_enqueue_scripts', 'sarah_read_aloud_add_style' );
 
 function sarah_read_aloud_add_js_scripts() {
     if (!get_option('sarah_read_aloud_option_running'))
@@ -33,7 +52,15 @@ function sarah_read_aloud_add_js_scripts() {
     // Enqueue script file
     wp_enqueue_script( 'read-aloud', $plugin_url . 'js/read-aloud.js', array(), '1.0.0', true );
 }
-add_action( 'wp_enqueue_scripts', 'sarah_read_aloud_add_js_scripts' );
+
+function sarah_read_aloud_admin_bar_scripts() {
+    wp_enqueue_script( 'sarah-read-aloud-admin-bar-scripts', plugin_dir_url( __FILE__ ) . 'js/admin_min_bar.js', array( 'jquery' ), '1.0.0', true );
+}
+
+add_action( 'wp_enqueue_scripts', 'sarah_read_aloud_site_scripts' );
+
+add_action( 'admin_enqueue_scripts', 'sarah_read_aloud_admin_scripts' );
+
 
 function sarah_read_aloud_add_id_to_content( $the_content ): array|string
 {
@@ -61,21 +88,6 @@ function sarah_read_aloud_add_id_to_content( $the_content ): array|string
           <span class="icon"></span>
           <span class="text">Stop</span>  
         </button>
-        
-//        <script>
-//          const readAloudBtn = document.querySelector("#read-aloud-button-play");
-//        
-//          readAloudBtn.addEventListener("click", () => {
-//            const selection = window.getSelection().toString().trim();
-//        
-//            if (selection.length > 0) {
-//              // Pass the selected text to the text-to-speech API
-//              // Here\'s an example using the SpeechSynthesis API
-//              const utterance = new SpeechSynthesisUtterance(selection);
-//              speechSynthesis.speak(utterance);
-//            }
-//        });
-//        </script>
     </div>';
     // Add an ID attribute to the content element
     return '<div class="blog-content" id="blog-content">'.$the_content.'</div>'.$buttons;
@@ -91,9 +103,6 @@ function sarah_read_aloud_theme_enqueue_bootstrap() {
     wp_enqueue_script( 'bootstrap', 'https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js', array('jquery'), '', true );
 }
 add_action( 'wp_enqueue_scripts', 'sarah_read_aloud_theme_enqueue_bootstrap' );
-
-
-
 
 add_action('admin_menu', 'sarah_read_aloud_settings_page');
 
@@ -121,10 +130,6 @@ function sarah_read_aloud_settings_page_callback() {
     </div>
     <?php
 }
-
-
-
-
 
 add_action('admin_init', 'sarah_read_aloud_settings_init');
 
@@ -164,6 +169,9 @@ function sarah_read_aloud_field_callback() {
     <?php
 }
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
 function sarah_read_aloud_field_update_callback() {
     if ( isset( $_POST['sarah_read_aloud_option_running'] ) ) {
         update_option( 'sarah_read_aloud_option_running', $_POST['sarah_read_aloud_option_running'] );
@@ -172,28 +180,6 @@ function sarah_read_aloud_field_update_callback() {
     }
 }
 
-add_action( 'admin_enqueue_scripts', 'sarah_read_aloud_admin_enqueue_scripts' );
-
-//// Enqueue script to read and update the hidden field value
-//function sarah_read_aloud_admin_enqueue_scripts() {
-//    wp_enqueue_script( 'sarah-read-aloud-admin', plugin_dir_url( __FILE__ ) . 'js/admin_min_bar.js', array( 'jquery' ), '1.0.0', true );
-//}
-//
-//function sarah_read_aloud_admin_bar_menu() {
-//    global $wp_admin_bar;
-//    $option = get_option('sarah_read_aloud_option_running');
-//    $checked = $option ? 'checked="checked"' : '';
-//    $wp_admin_bar->add_menu( array(
-//        'id' => 'sarah_read_aloud_admin_bar_menu',
-//        'parent' => 'top-secondary',
-//        'title' => '<label><input type="checkbox" name="sarah_read_aloud_option_running" value="1" ' . $checked . '>' . __( 'Enable Sarah\'s Read for Me', 'sarah-read-for-me' ) . '</label>',
-//        'meta' => array(
-//            'class' => 'sarah-read-aloud-admin-bar-menu',
-//            'onclick' => 'sarah_read_aloud_toggle_option();',
-//        ),
-//    ) );
-//}
-//add_action( 'wp_before_admin_bar_render', 'sarah_read_aloud_admin_bar_menu' );
 
 
 function sarah_read_aloud_toggle_option() {
@@ -246,8 +232,3 @@ function sarah_read_aloud_admin_bar_menu() {
 }
 add_action( 'admin_bar_menu', 'sarah_read_aloud_admin_bar_menu', 999 );
 
-function sarah_read_aloud_admin_bar_scripts() {
-    wp_enqueue_script( 'sarah-read-aloud-admin-bar-scripts', plugin_dir_url( __FILE__ ) . 'js/admin_min_bar.js', array( 'jquery' ), '1.0.0', true );
-}
-add_action( 'wp_enqueue_scripts', 'sarah_read_aloud_admin_bar_scripts' );
-add_action( 'admin_enqueue_scripts', 'sarah_read_aloud_admin_bar_scripts' );

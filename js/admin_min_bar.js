@@ -12,7 +12,7 @@ function sarah_read_aloud_toggle_option() {
         action: 'sarah_read_aloud_toggle_option',
         value: checked,
     };
-    jQuery.post(ajaxurl, data, function(response) {
+    jQuery.post(sarah_read_aloud_ajax_object.ajax_url, data, function(response) {
         console.log(response);
         checkbox.checked = response == '1';
     });
@@ -29,3 +29,4 @@ function sarah_read_aloud_select_option() {
     menu_toggle.checked = !menu_toggle.checked;
     sarah_read_aloud_toggle_option();
 }
+
