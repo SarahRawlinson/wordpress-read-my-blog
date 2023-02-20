@@ -30,7 +30,7 @@ function PlaySpeech() {
     let stringPos = 0;
 
 // Create an array of all the words in the text
-    const words = allText.split(" ");
+    const words = allText.split(/\s+/);
     console.log(words.length);
 
 // Create a new HTML element to hold the highlighted text
@@ -44,6 +44,8 @@ function PlaySpeech() {
         wordElement.id = 'read-word-' + i;
 
         stringCopyHTML = allHTML.substring(stringPos);
+        console.log("word: " + word);
+        console.log(stringStart + stringCopyHTML);
         let wordIndex = 0;
 
         let isElement = false;
@@ -52,18 +54,21 @@ function PlaySpeech() {
             let char = stringCopyHTML[j];
             if (char === '>')
             {
+                wordIndex = 0;
                 isElement = false;
-                console.log('open bracket end = ' + (j + stringPos));
+                // console.log('open bracket end = ' + (j + stringPos));
                 continue;
             }
             if (isElement || char === ' ')
             {
+                wordIndex = 0;
                 continue;
             }
             if (char === '<')
             {
+                wordIndex = 0;
                 isElement = true;
-                console.log('open bracket start = ' + (j + stringPos));
+                // console.log('open bracket start = ' + (j + stringPos));
                 continue;
             }
             if (char === word[wordIndex])
