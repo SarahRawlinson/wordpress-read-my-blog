@@ -56,7 +56,6 @@ function PlaySpeech() {
             {
                 wordIndex = 0;
                 isElement = false;
-                // console.log('open bracket end = ' + (j + stringPos));
                 continue;
             }
             if (isElement || char === ' ')
@@ -68,7 +67,6 @@ function PlaySpeech() {
             {
                 wordIndex = 0;
                 isElement = true;
-                // console.log('open bracket start = ' + (j + stringPos));
                 continue;
             }
             if (char === word[wordIndex])
@@ -84,10 +82,18 @@ function PlaySpeech() {
                 wordIndex = 0;
             }
         }
-
-        stringPos = endPosition;
-        stringEnd = allHTML.substring(stringPos);
-        highlightedText.appendChild(wordElement);
+        if (endPosition !== 0 )
+        {
+            stringPos = endPosition;
+        }
+        if (endPosition >= allHTML.length)
+        {
+            stringEnd = "";
+        }
+        else
+        {
+            stringEnd = allHTML.substring(stringPos);
+        }
         i++;
     });
 
