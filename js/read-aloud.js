@@ -1,6 +1,6 @@
 ﻿
 let i = 0;
-let lastIndex = 0;
+let lastIndex = -1;
 
 function clearHighlighting() {
     const highlightedWords = document.querySelectorAll(".highlighted-word");
@@ -11,19 +11,44 @@ function clearHighlighting() {
 
 function reset() {
     clearHighlighting();
-    lastIndex = 0;
+    lastIndex = -1;
     i = 0;
+}
+
+function isAlphaNumeric(str) {
+    let code, i, len;
+    for (i = 0, len = str.length; i < len; i++) {
+        code = str.charCodeAt(i);
+        if (!(code > 47 && code < 58) && // numeric (0-9)
+            !(code > 64 && code < 91) && // upper alpha (A-Z)
+            !(code > 96 && code < 123)) { // lower alpha (a-z)
+            return false;
+        }
+    }
+    return true;
+}
+
+function isWord(str) {
+    let code, i, len;
+    for (i = 0, len = str.length; i < len; i++) {
+        code = str[i];
+        if (isAlphaNumeric(code))
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 function PlaySpeech() {
 // Get all the text content of the webpage
     let content_element = document.getElementById("blog-content");
-    console.log(content_element);
+    // console.log(content_element);
     if (content_element === null) return;
     console.log('read-aloud enabled v1');
     const allText = content_element.innerText;
     const allHTML = content_element.innerHTML;
-    console.log(typeof allHTML);
+    // console.log(typeof allHTML);
     let stringStart = "";
     let stringEnd = "";
     let stringCopyHTML = allHTML;
@@ -31,15 +56,19 @@ function PlaySpeech() {
 
 // Create an array of all the words in the text
     const words = allText.split(/\s+/);
-    console.log(words.length);
+    // console.log(words.length);
 
 // Create a new HTML element to hold the highlighted text
     const highlightedText = document.createElement("span");
-    
+
 // Loop through each word and add it to the highlighted text element with a class for styling
     words.forEach((word) => {
+        if (!isWord(word))
+        {
+            return;
+        }
         const wordElement = document.createElement("span");
-        wordElement.textContent = `${word} `;
+        wordElement.textContent = `${word}`;
         wordElement.classList.add("highlighted-word");
         wordElement.id = 'read-word-' + i;
 
@@ -58,17 +87,18 @@ function PlaySpeech() {
                 isElement = false;
                 continue;
             }
-            if (isElement || char === ' ')
-            {
-                wordIndex = 0;
-                continue;
-            }
             if (char === '<')
             {
                 wordIndex = 0;
                 isElement = true;
                 continue;
             }
+            if (isElement)
+            {
+                wordIndex = 0;
+                continue;
+            }
+            
             if (char === word[wordIndex])
             {
                 wordIndex++;
@@ -113,12 +143,14 @@ function PlaySpeech() {
 // Highlight each word as it's read by the speech synthesis engine
     utterance.onboundary = (event) => {
 
+        console.log("/////////////////////////////////////////////////////////////////");
+        console.log(event.charIndex);
         if (lastIndex === event.charIndex || i >= words.length)
         {
             return;
         }
         lastIndex = event.charIndex;
-        console.log(i);    
+        console.log(i);
         if (i > 0)
         {
             document.getElementById('read-word-' + (i - 1)).classList.remove("highlighted-word--active");
@@ -127,7 +159,7 @@ function PlaySpeech() {
         i++;
     };
 
-    
+
 
 // Remove active highlighting from all words when speech ends
     utterance.onend = () => {
@@ -166,7 +198,7 @@ function PlaySpeech() {
     resume_button.addEventListener("click", () => {
         synth.resume();
     });
-    
+
 }
 
 PlaySpeech();
