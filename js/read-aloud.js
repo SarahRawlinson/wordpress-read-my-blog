@@ -39,27 +39,61 @@ function isWord(str) {
     }
     return false;
 }
+function randomIntFromInterval(min, max) { // min and max included 
+    return Math.floor(Math.random() * (max - min + 1) + min)
+}
+
 
 function PlaySpeech() {
 // Get all the text content of the webpage
     let content_element = document.getElementById("blog-content");
     // console.log(content_element);
     if (content_element === null) return;
-    console.log('read-aloud enabled v1');
+    console.log('read-aloud (just for fun) enabled v1');
     const allText = content_element.innerText;
     const allHTML = content_element.innerHTML;
+    let fonts = [
+        ["helvetica,sans-serif",0],
+        ["arial",0],
+        ["arial black,sans-serif",0],
+        ["verdana,sans-serif",0],
+        ["tahoma,sans-serif",0],
+        ["trebuchet ms,sans-serif",0],
+        ["impact,sans-serif",0],
+        ["gill sans,sans-serif",0],
+        ["times new roman,serif",0],
+        ["georgia,serif",0],
+        ["palatino,serif",0],
+        ["baskerville,serif",0],
+        ["andale mono,monospace",0],
+        ["courier,monospace",25],
+        ["lucida,monospace",0],
+        ["monaco,monospace",0],
+        ["bradley hand,cursive",0],
+        ["brush script mt,cursive",75],
+        ["luminari,fantasy",0],
+        ["comic sans ms,cursive",0]
+    ];
+
     // console.log(typeof allHTML);
     let stringStart = "";
     let stringEnd = "";
     let stringCopyHTML = allHTML;
     let stringPos = 0;
+    let colour_a_r = 67;
+    let colour_b_r = 3;
+    let colour_a_g = 83;
+    let colour_b_g = 26;
+    let colour_a_b = 130;
+    let colour_b_b = 120;
+
+
+
 
 // Create an array of all the words in the text
     const words = allText.split(/\s+/);
     // console.log(words.length);
-
-// Create a new HTML element to hold the highlighted text
-    const highlightedText = document.createElement("span");
+    
 
 // Loop through each word and add it to the highlighted text element with a class for styling
     words.forEach((word) => {
@@ -71,10 +105,13 @@ function PlaySpeech() {
         wordElement.textContent = `${word}`;
         wordElement.classList.add("highlighted-word");
         wordElement.id = 'read-word-' + i;
-
+        let font = fonts[Math.floor(Math.random()*fonts.length)];
+        wordElement.style.fontFamily = font[0];
+        wordElement.style.fontSize = (100 + font[1]) + '%';
+        wordElement.style.color = "#" + (randomIntFromInterval(colour_a_r, colour_b_r)).toString(16)
+            + (randomIntFromInterval(colour_a_g, colour_b_g)).toString(16)
+            + (randomIntFromInterval(colour_a_b, colour_b_b)).toString(16);
         stringCopyHTML = allHTML.substring(stringPos);
-        console.log("word: " + word);
-        console.log(stringStart + stringCopyHTML);
         let wordIndex = 0;
 
         let isElement = false;
